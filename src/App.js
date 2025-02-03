@@ -4,15 +4,21 @@ import VideoList from "./component/VideoList";
 import axios from "axios";
 
 function App() {
-	// array to handle all notes
-  const [vidList, setVidList] = useState([])
+	
+  const [vidList, setVidList] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+
+  const updateVideoList = (newUpdate)=>{
+    setRefresh(newUpdate);
+  }
+
 
 	// upon first page load all video list from node backend
 	
   useEffect(() => {
     console.log('useEffect runs ...')
 
-		//use root / to get all vid list
+		//hit root / to get all vid list
     axios.get("http://localhost:3001/")
       .then(response => {
         setVidList(response.data.data);         
@@ -21,13 +27,13 @@ function App() {
         alert('failed to load Vedio List')
         console.log(error.message)
       })
-  }, []);
+  }, [refresh]);
 
 
 
 	return (
 		<div className="App">
-			<FileUploader />
+			<FileUploader updateVideoList= {updateVideoList} />
 			<VideoList vList = {vidList} />
 		</div>
 	);

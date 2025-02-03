@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 require("../index.css")
 
-export default function FileUploader() {
+export default function FileUploader(props) {
 
     const [file, setFile] = useState(null);
     const [status, setStatus] = useState("idle");
@@ -14,6 +14,7 @@ export default function FileUploader() {
             setFile(e.target.files[0]);
             setUploadProgress(0);
             setStatus("idle");
+            props.updateVideoList(false)
         }
     }
 
@@ -45,6 +46,7 @@ export default function FileUploader() {
 
             setStatus("success")
             setUploadProgress(100)
+            props.updateVideoList(true)
         } catch (error) {
             setStatus("error")
             setUploadProgress(0)
