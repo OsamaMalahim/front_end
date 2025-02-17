@@ -1,17 +1,39 @@
 import React, { useState } from "react";
 import Modal from "../Modal";
+import axios from "axios";
 
 export default function VideoList(props) {
   // Modal useState
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   console.log("below is vedio list");
   const vedioList = props.vList;
   console.log(vedioList);
+
+  function extractAudio(id) {
+    console.log("id is : ", id);
+    axios
+      .post(
+        "http://localhost:5112/extractAudio",
+        { vedioId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("response for extracting data", response.data);
+      })
+      .catch((error) => {
+        console.log("error in extract audio", error);
+      });
+  }
+
   return (
     <div className="All-Vid-List">
       {vedioList.map((vedio) => {
         // Convert the Base64 image string to a data URL
-        const imageSrc = `data:image/jpg;base64,${vedio.thumb}`;       
+        const imageSrc = `data:image/jpg;base64,${vedio.thumb}`;
 
         return (
           <div key={vedio.id}>
@@ -30,7 +52,14 @@ export default function VideoList(props) {
                 >
                   Resize
                 </button>
-                <button className="item">Extract Audio</button>
+                <button
+                  className="item"
+                  onClick={() => {
+                    extractAudio(vedio.id);
+                  }}
+                >
+                  Extract Audio
+                </button>
                 <button className="item">Download</button>
               </div>
             </div>
