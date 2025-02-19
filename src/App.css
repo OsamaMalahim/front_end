@@ -58,3 +58,32 @@
   justify-content: center;
   align-items: center;    
 } 
+
+/* App.css */
+.button {
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.download {
+  background-color: blue;
+}
+
+.processing {
+  background-color: blue;
+  animation: blink 1s infinite;
+}
+
+.extract {
+  background-color: blue;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
