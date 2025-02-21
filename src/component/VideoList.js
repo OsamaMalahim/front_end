@@ -114,7 +114,7 @@ export default function VideoList(props) {
           <div key={vedio.id}>
             <div className="vid">
               <div className="image-container">
-                <img src={imageSrc} width="50" height="50" alt="just thumb" />
+                <img src={imageSrc} width="50" height="50" alt="thumb" />
                 <p>{vedio.Name}</p>
                 <p>{vedio.Size} MB</p>
               </div>
@@ -133,8 +133,10 @@ export default function VideoList(props) {
                     extractAudioClick(vedio.id, vedio.Name);
                   }}
                 >
+                  {vedio.audio && "Download Audio"}
+                  {!vedio.audio && (buttonStates[vedio.id] || "Extract Audio")}
                   {/* {vedio.audio ? "Download Audio" : "Extract Audio"} */}
-                  {buttonStates[vedio.id] || "Extract Audio"}
+                  {/* { buttonStates[vedio.id] || "Extract Audio"} */}
                 </button>
                 <button className="button download">Download</button>
               </div>
