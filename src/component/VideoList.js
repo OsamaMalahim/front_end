@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
 import axios from "axios";
 import "../App.css";
@@ -8,6 +8,7 @@ export default function VideoList(props) {
   // Modal useState
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [buttonStates1, setButtonStates1] = useState({});
 
   // State to manage the text for each button
   const [buttonStates, setButtonStates] = useState({}); // Extract, Download, Processing
@@ -15,11 +16,21 @@ export default function VideoList(props) {
   const vedioList = props.vList;
   console.log("below is vedio list", vedioList);
 
+  useEffect(() => {
+    const newButtonStates1 = {};
+    vedioList.forEach((vedio) => {
+      if (vedio.audio) {
+        newButtonStates1[vedio.id] = "Download Audio";
+      }
+    });
+    setButtonStates1(newButtonStates1);
+  }, [vedioList]); // Only run this effect when vedioList changes
+
   function extractAudioClick(id, vedName) {
     // add condition here if audio = Extract || Download || Processing
     console.log("id is : ", id);
 
-    setButtonStates((prevStates) => {
+    setButtonStates1((prevStates) => {
       const currentState = prevStates[id] || "Extract Audio"; // Default to 'Extract Audio' if no state exists
       let nextState;
       if (currentState === "Extract Audio") {
@@ -39,13 +50,13 @@ export default function VideoList(props) {
             console.log("response for extracting data", response.data);
             if (response.status === 200) {
               console.log("response 200");
-              setButtonStates((prev) => ({ ...prev, [id]: "Download Audio" }));
+              setButtonStates1((prev) => ({ ...prev, [id]: "Download Audio" }));
             }
           })
           .catch((error) => {
             console.log("error in extract audio", error);
             console.log("reach 500");
-            setButtonStates((prev) => ({ ...prev, [id]: "Extract Audio" }));
+            setButtonStates1((prev) => ({ ...prev, [id]: "Extract Audio" }));
           });
       } else if (currentState === "Download Audio") {
         nextState = "Download Audio";
@@ -161,7 +172,8 @@ export default function VideoList(props) {
                     extractAudioClick(vedio.id, vedio.Name);
                   }}
                 >
-                  {buttonStates[vedio.id] || "Extract Audio"}
+                  {buttonStates1[vedio.id] || "Extract Audio"}
+                  {/* {buttonStates[vedio.id] || "Extract Audio"} */}
                 </button>
                 <button
                   className="button download"
