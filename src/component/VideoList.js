@@ -7,7 +7,7 @@ import "../App.css";
 export default function VideoList(props) {
   // Modal useState
   const [open, setOpen] = useState(false);
-  // extract adudio button
+  const [fileName, setFileName] = useState("");
 
   // State to manage the text for each button
   const [buttonStates, setButtonStates] = useState({}); // Extract, Download, Processing
@@ -90,7 +90,7 @@ export default function VideoList(props) {
     });
   } // end function
 
-  // Function to get the button class based on its state
+  // Function ...extract audio ... to get the button class based on its state
   const getButtonClass = (state) => {
     switch (state) {
       case "Download":
@@ -104,11 +104,38 @@ export default function VideoList(props) {
     }
   };
 
+  // Function download vedio click handler
+
+  function downloadVedioHandler(id, vedName) {
+    try {
+      axios
+        .get(`http://localhost:5112/vedio/${id}`, {
+          responseType: "blob",
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            // create blob from response data
+            const blob = new Blob([response.data], { type: "video/mp4" });
+            //create link element
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = vedName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        });
+    } catch (error) {
+      console.log("error in downloading audio", error);
+    }
+  }
+
   return (
     <div className="All-Vid-List">
       {vedioList.map((vedio) => {
         // Convert the Base64 image string to a data URL
         const imageSrc = `data:image/jpg;base64,${vedio.thumb}`;
+        console.log(vedio.audio);
 
         return (
           <div key={vedio.id}>
@@ -123,6 +150,7 @@ export default function VideoList(props) {
                   className="button download"
                   onClick={() => {
                     setOpen(true);
+                    setFileName(vedio.Name);
                   }}
                 >
                   Resize
@@ -133,12 +161,16 @@ export default function VideoList(props) {
                     extractAudioClick(vedio.id, vedio.Name);
                   }}
                 >
-                  {vedio.audio && "Download Audio"}
-                  {!vedio.audio && (buttonStates[vedio.id] || "Extract Audio")}
-                  {/* {vedio.audio ? "Download Audio" : "Extract Audio"} */}
-                  {/* { buttonStates[vedio.id] || "Extract Audio"} */}
+                  {buttonStates[vedio.id] || "Extract Audio"}
                 </button>
-                <button className="button download">Download</button>
+                <button
+                  className="button download"
+                  onClick={() => {
+                    downloadVedioHandler(vedio.id, vedio.Name);
+                  }}
+                >
+                  Download
+                </button>
               </div>
             </div>
           </div>
@@ -146,7 +178,11 @@ export default function VideoList(props) {
       })}
 
       {/* Modal Here */}
-      <Modal openStatus={open} closeModal={() => setOpen(false)} />
+      <Modal
+        fileName={fileName}
+        openStatus={open}
+        closeModal={() => setOpen(false)}
+      />
     </div>
   );
 }
