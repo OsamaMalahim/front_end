@@ -4,7 +4,7 @@ export default function Modal(props) {
   const [videoName, setVideoName] = useState("");
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
-//   setVideoName(props.fileName);
+  //   setVideoName(props.fileName);
   if (!props.openStatus) {
     return <></>;
   }
@@ -19,7 +19,7 @@ export default function Modal(props) {
     };
 
     try {
-      const response = await fetch("/api/uploadVideo", {
+      const response = await fetch("http://localhost:5112/api/resizeVideo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,10 +37,15 @@ export default function Modal(props) {
     }
   };
 
-  ////
+  function handleClose() {
+    props.closeModal();
+    setWidth(0);
+    setHeight(0);
+  }
+
   return (
     <div className="Modal-Background">
-      <button className="btn-close" onClick={props.closeModal}>
+      <button className="btn-close" onClick={handleClose}>
         X close
       </button>
       <h2>Resize {props.fileName} </h2>
@@ -48,23 +53,32 @@ export default function Modal(props) {
       <form onSubmit={handleSubmit}>
         <div className="Modal-input">
           <input
-            type="number"
+            type="text"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
+            placeholder="width"
             required
           ></input>
           <p>X</p>
           <input
-            type="number"
+            type="text"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
+            placeholder="height"
             required
           ></input>
-          <button type="submit" onClick={()=>{setVideoName(props.fileName)}}>Resize</button>
+          <button
+            type="submit"
+            onClick={() => {
+              setVideoName(props.fileName);
+            }}
+          >
+            Resize
+          </button>
         </div>
       </form>
       <div className="modal-btn">
-        <button className="btn-cancel" onClick={props.closeModal}>
+        <button className="btn-cancel" onClick={handleClose}>
           cancel
         </button>
       </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
 import axios from "axios";
 import "../App.css";
-// import path from "n"
 
 export default function VideoList(props) {
   // Modal useState
@@ -16,6 +15,7 @@ export default function VideoList(props) {
   const vedioList = props.vList;
   console.log("below is vedio list", vedioList);
 
+  // Update Audio label [Extract Audio, Download Audio, Processing]
   useEffect(() => {
     const newButtonStates1 = {};
     vedioList.forEach((vedio) => {
@@ -144,17 +144,22 @@ export default function VideoList(props) {
   return (
     <div className="All-Vid-List">
       {vedioList.map((vedio) => {
-        // Convert the Base64 image string to a data URL
-        const imageSrc = `data:image/jpg;base64,${vedio.thumb}`;
-        console.log(vedio.audio);
-
+        // thumb baby.jpg from baby.mp4
+        // regexp /\.[^/.]+$/ convert any extension to .jpg
+        const thumbFile = vedio.Name.replace(/\.[^/.]+$/, ".jpg");
         return (
           <div key={vedio.id}>
             <div className="vid">
               <div className="image-container">
-                <img src={imageSrc} width="50" height="50" alt="thumb" />
+                <img
+                  src={`http://localhost:5112/thumb/${thumbFile}`}
+                  width="50"
+                  height="50"
+                  alt="thumb"
+                />
                 <p>{vedio.Name}</p>
-                <p>{vedio.Size} MB</p>
+                <p>{vedio.resolution}</p>
+                <p>{Math.floor(Number(vedio.Size) / (1024 * 1024))} MB</p>
               </div>
               <div className="right-items">
                 <button

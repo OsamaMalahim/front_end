@@ -16,16 +16,28 @@ function App() {
   useEffect(() => {
     console.log("useEffect runs ...");
 
+    async function fetchVedioList() {
+      await axios
+        .get("http://localhost:5112/")
+        .then((response) => {
+          setVidList(response.data.data);
+        })
+        .catch((error) => {
+          alert("failed to load Vedio List");
+          console.log(error.message);
+        });
+
+      // await axios
+      //   .get("http://localhost:5112/thumb")
+      //   .then((response) => {
+      //     console.log(response.data); // get image list in array
+      //   })
+      //   .catch((error) => {
+      //     console.log(error.message);
+      //   });
+    }
+    fetchVedioList();
     //hit root / to get all vid list
-    axios
-      .get("http://localhost:5112/")
-      .then((response) => {
-        setVidList(response.data.data);
-      })
-      .catch((error) => {
-        alert("failed to load Vedio List");
-        console.log(error.message);
-      });
   }, [refresh]);
 
   return (
